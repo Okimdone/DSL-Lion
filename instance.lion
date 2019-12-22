@@ -1,6 +1,7 @@
 FROM "file1.csv" LOAD {
     int16 "col1";
     int8 "col2";
+    int "col3";
 } AS file1 USING "\t" AS SEP
 
 
