@@ -1,1 +1,1 @@
-{{ lionFrameName }} = pandas('{{fileName}}', usecols={{ columns }}, dtypes={{ dtypes }})
+{{ lionFrame }} = pd.read_csv('{{file_path}}', usecols={{ columns }}, dtype={{ dtype }})

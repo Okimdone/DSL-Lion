@@ -1,15 +1,35 @@
 #!/usr/bin/env python
 
 from jinja2 import Environment, FileSystemLoader
+import textx as tx
 
 file_loader = FileSystemLoader('templates')
 env = Environment(loader=file_loader)
 
-main_tpl = env.get_template('main.py.tpl')
-loadFrame = env.get_template('LoadLionFrame.py.tpl')
+def genCode(mainRule):
+    main_tpl = env.get_template('main.py.tpl')
+    loadFrame = env.get_template('LoadLionFrame.py.tpl')
 
-# This must contain a dtypes as a dict of keyworld ( names of columns and their types )
-dtypes={"salam":"salamd", "hi":"hid"}
-LF1  =  loadFrame.render(lionFrameName='FrameName', fileName="filename.csv", columns=str(list(dtypes.keys())), dtypes=dtypes)
-LF2  =  loadFrame.render(lionFrameName='FrameName2', fileName="filename2.csv", columns=str(list(dtypes.keys())), dtypes=dtypes)
-print(main_tpl.render(loadFrames=[LF1, LF2]))
+    loadrules = tx.get_children_of_type('LoadRule',mainRule)
+
+
+    # Generating the load code for every LoadRule
+    loadedFramesCode = []
+    for loadrule in loadrules:
+        file_path = loadrule.file_path
+        lionFrame = loadrule.lionFrame
+        columns = []
+        dtypes = dict()
+        for column in loadrule.columns:
+            columns.append(column.v_name)
+            dtypes[column.v_name] = column.type
+        
+        LF = loadFrame.render(lionFrame=lionFrame, file_path=file_path, columns=columns, dtype=dtypes)
+        loadedFramesCode.append(LF)
+            
+    return loadedFramesCode
+
+
+if __name__ == "__main__":
+    pass
+    #genCode()
