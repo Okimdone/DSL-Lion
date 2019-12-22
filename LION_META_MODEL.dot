@@ -1,0 +1,53 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+29581456[ label="{GeneralRule|}"]
+
+29565440[ label="{LoadRule|+file_path:STRING\l+lionFrame:ID\l}"]
+
+29747696[ label="{ColumnRule|+type:Dtype\l+v_name:STRING\l}"]
+
+29753232[ label="{Dtype|int8\|int16\|int32\|int64\|uint8\|uint16\|uint32\|uint64\|float16\|float32\|float64\|complex64\|complex128\|bool\|object\|bytes\|str\|void}"]
+
+29562496[ label="{ID|}"]
+
+29567440[ label="{STRING|}"]
+
+29572384[ label="{BOOL|}"]
+
+29577920[ label="{INT|}"]
+
+29583456[ label="{FLOAT|}"]
+
+29589536[ label="{STRICTFLOAT|}"]
+
+29595072[ label="{NUMBER|}"]
+
+29601200[ label="{BASETYPE|}"]
+
+29606736[ label="{*OBJECT|}"]
+
+
+
+29581456 -> 29565440[arrowtail=diamond, dir=both, headlabel="rules 0..*"]
+29565440 -> 29747696[arrowtail=diamond, dir=both, headlabel="columns 1..*"]
+29595072 -> 29589536 [dir=back]
+29595072 -> 29577920 [dir=back]
+29601200 -> 29595072 [dir=back]
+29601200 -> 29583456 [dir=back]
+29601200 -> 29572384 [dir=back]
+29601200 -> 29562496 [dir=back]
+29601200 -> 29567440 [dir=back]
+29606736 -> 29601200 [dir=back]
+
+}

@@ -1,3 +1,9 @@
 FROM "file1.csv" LOAD {
+    int16 "col1";
+    int8 "col2";
+} AS file1 USING "\t" AS SEP
+
+
+FROM "file2.csv" LOAD {
     int16 "py";
-} as file1
+} AS file2
