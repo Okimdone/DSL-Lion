@@ -1,0 +1,3 @@
+FROM "file1.csv" LOAD {
+    int16 "py";
+} as file1
