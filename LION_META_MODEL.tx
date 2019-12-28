@@ -3,14 +3,14 @@ MainRule:
 ;
 
 GeneralRule:
-    ((Save | Add | Erase | Redefine | Fill | Select) ';' | Load)
+    ((Save | Add | Erase | Set | Fill | Select) ';' | Load)
 ;
 
 FILEPATH:
     /(\/)?([a-zA-Z0-1_.]+(\/)?)*[a-zA-Z0-9_.]+/
 ;
-// DDL : 
 
+// DDL : 
 Column:
     type=Dtype v_name=STRING
 ;
@@ -39,9 +39,8 @@ Erase:
     'ERASE' column=STRING 'FROM' lionFrame=ID
 ;
 
-
-Redefine:
-    'REDEFINE' column=STRING 'FROM' lionFrame=ID 'AS' column=Column
+Set:
+    'SET' column=STRING 'FROM' lionFrame=ID 'AS' column=Column
 ;
 
 
@@ -51,7 +50,6 @@ Save:
 
 
 // DML : 
-
 Fill:
     'FILL' column=STRING 'FROM' lionFrame=ID 'USING' algo=Algo
 ;

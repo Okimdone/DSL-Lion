@@ -6,10 +6,13 @@ LOAD "test.csv" INTO ds1 AS {
 } USING "\t" AS SEP;
 
 ADD int8 "col1" INTO ds1 AS "col4" + "col3" * "col12";
+AGGREGATE 'col1' + 'col2' FROM ds1 AS int8 "col3";
+
 
 ERASE "col1" FROM ds1;
 
-REDEFINE "col4" FROM ds1 AS float16 "col6";
+SET "col4" FROM ds1 AS float16 "col6";
 
 FILL "col1" FROM ds1 USING IMPUTATION;
 SELECT TOP 3 FROM ds1 USING CHI2;
+
