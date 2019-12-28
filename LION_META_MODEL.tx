@@ -1,17 +1,75 @@
-GeneralRule :
-    rules*=LoadRule
+MainRule:
+    rules*=GeneralRule
 ;
 
-LoadRule : 
-    'FROM' '"' file_path=/(\/)?([a-zA-Z0-1_.]+(\/)?)*[a-zA-Z0-9_.]+/ '"' 'LOAD' '{'
-        columns+=ColumnRule
-    '}' 'as' lionFrame=ID
+GeneralRule:
+    ((Save | Add | Erase | Set | Fill | Select) ';' | Load)
 ;
 
-ColumnRule :
-    type=Dtype v_name=STRING ';'
+FILEPATH:
+    /(\/)?([a-zA-Z0-1_.]+(\/)?)*[a-zA-Z0-9_.]+/
 ;
 
-Dtype :
+// DDL : 
+Column:
+    type=Dtype v_name=STRING
+;
+
+Load: 
+    'LOAD' '"' file_path=FILEPATH '"' 'INTO' lionFrame=ID 'AS' '{'
+        columns+=Column
+    '}' ('USING' sep=STRING 'AS' 'SEP' ';')?
+;
+
+
+Arith:
+    /[*+-\/]/
+;
+
+LionArith:
+    cola=STRING (arith=Arith colb=LionArith)?
+;
+
+
+Add:
+    'ADD' column=Column 'INTO' lionFrame=ID 'AS' (lionarith+=LionArith)
+;
+
+Erase:
+    'ERASE' column=STRING 'FROM' lionFrame=ID
+;
+
+Set:
+    'SET' column=STRING 'FROM' lionFrame=ID 'AS' column=Column
+;
+
+
+Save:
+    'SAVE' lionFrame=ID 'AS' '"' file_path=FILEPATH '"'
+;
+
+
+// DML : 
+Fill:
+    'FILL' column=STRING 'FROM' lionFrame=ID 'USING' algo=Algo
+;
+
+Select:
+    'SELECT' 'TOP' top=INT 'FROM' lionFrame=ID 'USING' algo=Algo
+;
+
+
+// DQL : 
+Dtype:
     'int8' | 'int16' | 'int32' | 'int64' | 'uint8' | 'uint16' | 'uint32' | 'uint64' | 'float16' | 'float32' | 'float64' | 'complex64' | 'complex128' | 'bool' | 'object' | 'bytes' | 'str' | 'void'
+;
+
+
+Algo:
+    'CHI2' | 'IMPUTATION'
+;
+
+
+Comment:
+  /\/\/.*$/
 ;
