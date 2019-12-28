@@ -1,3 +1,0 @@
-FROM "donnee.csv" LOAD {
-    int16 "py";
-} AS file1
