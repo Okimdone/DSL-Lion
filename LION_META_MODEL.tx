@@ -3,37 +3,72 @@ MainRule:
 ;
 
 GeneralRule:
-    LoadRule | SaveRule
+    ((Save | Add | Erase | Redefine | Fill | Select) ';' | Load)
 ;
 
 FILEPATH:
     /(\/)?([a-zA-Z0-1_.]+(\/)?)*[a-zA-Z0-9_.]+/
 ;
+// DDL : 
 
-LoadRule: 
-    'FROM' '"' file_path=FILEPATH '"' 'LOAD' '{'
-        columns+=ColumnRule
-    '}' 'AS' lionFrame=ID ('USING' sep=STRING 'AS' 'SEP')?
+Column:
+    type=Dtype v_name=STRING
+;
+
+Load: 
+    'LOAD' '"' file_path=FILEPATH '"' 'INTO' lionFrame=ID 'AS' '{'
+        columns+=Column
+    '}' ('USING' sep=STRING 'AS' 'SEP' ';')?
 ;
 
 
-ApplyRule:
-    'APPLY' pre_processor=PreProcessorRule 'ON' oldlionFrame=ID '{'
-        params+=ParamRule
-    '}' ('AS' newlionFrame=ID)?
+Arith:
+    /[*+-\/]/
 ;
 
-SaveRule:
-    'SAVE' lionFrame=ID 'AS' file_path=FILEPATH
-;
-
-ColumnRule:
-    type=Dtype v_name=STRING ';'
+LionArith:
+    cola=STRING (arith=Arith colb=LionArith)?
 ;
 
 
+Add:
+    'ADD' column=Column 'INTO' lionFrame=ID 'AS' (lionarith+=LionArith)
+;
+
+Erase:
+    'ERASE' column=STRING 'FROM' lionFrame=ID
+;
+
+
+Redefine:
+    'REDEFINE' column=STRING 'FROM' lionFrame=ID 'AS' column=Column
+;
+
+
+Save:
+    'SAVE' lionFrame=ID 'AS' '"' file_path=FILEPATH '"'
+;
+
+
+// DML : 
+
+Fill:
+    'FILL' column=STRING 'FROM' lionFrame=ID 'USING' algo=Algo
+;
+
+Select:
+    'SELECT' 'TOP' top=INT 'FROM' lionFrame=ID 'USING' algo=Algo
+;
+
+
+// DQL : 
 Dtype:
     'int8' | 'int16' | 'int32' | 'int64' | 'uint8' | 'uint16' | 'uint32' | 'uint64' | 'float16' | 'float32' | 'float64' | 'complex64' | 'complex128' | 'bool' | 'object' | 'bytes' | 'str' | 'void'
+;
+
+
+Algo:
+    'CHI2' | 'IMPUTATION'
 ;
 
 

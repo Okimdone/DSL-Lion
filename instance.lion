@@ -8,3 +8,66 @@ FROM "file1.csv" LOAD {
 FROM "file2.csv" LOAD {
     int16 "py";
 } AS file2
+
+
+
+// DDL : 
+
+// LION-FRAME CREATION : 
+FROM "filepath" LOAD {
+    <int8> "col1";
+    <float16> "col2";
+} AS file2
+
+#
+LOAD "filepath" INTO ds1 AS {
+    <int8> "col1";
+    <float16> "col2";
+}
+
+// ALTERING : 
+FROM ds1 AGGREGATE "col1" + "col2" - "col5" AS {
+    <int8> "col3"
+}
+
+#
+ADD <int8> "col3" INTO ds1 AS "col1" + col2" - "col5"
+
+
+// DROPPING : 
+FROM ds1 ERASE "col1"
+
+#
+ERASE "col1" FROM ds1
+
+// RE-DEFINING : 
+FROM ds1 CHANGE "col1" TO <float32> "col8"
+
+FROM ds1 REDEFINE "col1" AS <float32> "col8"
+
+REDEFINE "col1" FROM ds1 AS <float32> "col8"
+
+
+// SAVE : 
+
+SAVE ds1 AS "filepath"
+
+SAVE ds1 INTO "filepath"
+
+
+
+// DQL : 
+
+PLOT "col1" "col3" FROM ds1 AS "scatter"
+SHOW MDL
+DISPLAY "col1" col3" FROM ds1
+
+
+
+// DML : 
+
+FILL "col1" FROM ds1 USING algo1            
+SELECT TOP 10 FROM ds1 USING algo2
+
+// altering is a DDL and a DML
+
