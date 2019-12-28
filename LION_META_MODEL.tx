@@ -12,7 +12,7 @@ FILEPATH:
 
 // DDL : 
 Column:
-    type=Dtype v_name=STRING index=INT
+    type=Dtype v_name=STRING
 ;
 
 Load:
