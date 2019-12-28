@@ -1,4 +1,4 @@
 .vscode/
 ENV/
 *.dot
-.test.tx
+test.tx
