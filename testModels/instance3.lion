@@ -1,0 +1,47 @@
+
+
+
+FROM "csv" AS ds1 LOAD;
+FROM "csv" AS ds1 LOAD USING "," AS SEP;
+
+FROM "csv" AS ds1 LOAD {
+    int8 "col1" 0
+    float16 "col6" 5
+    int16 "col9" 55
+} USING "," AS SEP;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -12,13 +12,14 @@ FILEPATH:
 
 // DDL : 
 Column:
-    type=Dtype v_name=STRING
+    type=Dtype v_name=STRING index=INT
 ;
 
-Load: 
-    'LOAD' '"' file_path=FILEPATH '"' 'INTO' lionFrame=ID 'AS' '{'
+Load:
+    'FROM' '"' file_path=FILEPATH '"' 'AS' lionFrame=ID 'LOAD'  (';' | ( (('[ONLY]')? '{'
         columns+=Column
-    '}' ('USING' sep=STRING 'AS' 'SEP' ';')?
+    '}'
+    )? ('USING' sep=STRING 'AS' 'SEP' ';')?)?)
 ;
 
 
@@ -66,7 +67,7 @@ Dtype:
 
 
 Algo:
-    'CHI2' | 'IMPUTATION'
+    'CHI2' | 'IMPUTATION' | 'Z-SCORE' | 'MIN-MAX-SCORE'
 ;
 
 
