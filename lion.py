@@ -8,7 +8,7 @@ mm = metamodel_from_file('LION_META_MODEL.tx')
 # inject the processor into the meta-model : 
 p1.inject_processor(mm)
 
-m = mm.model_from_file('instance.lion')
+m = mm.model_from_file('testModels/instance.lion')
 # print(model.get_children_of_type('LoadRule', m))
 # generated_file_path = getCode(m)
 
