@@ -16,7 +16,7 @@ Column:
 ;
 
 Load:
-    'FROM' '"' file_path=FILEPATH '"' 'AS' lionFrame=ID 'LOAD'  (';' | ( (('[ONLY]')? '{'
+    'FROM' '"' file_path=FILEPATH '"' 'AS' lionFrame=ID 'LOAD'  (';' | ( (('ONLY')? '{'
         columns+=Column
     '}'
     )? ('USING' sep=STRING 'AS' 'SEP' ';')?)?)
