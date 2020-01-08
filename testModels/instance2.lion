@@ -41,7 +41,7 @@ ALTER LIONFRAME ds1 DROP NAN FEATURE ON SUBSET ("col1","col6") ;
 ALTER LIONFRAME ds1 DROP NAN ROW     ON SUBSET ("col1") ;
 ALTER LIONFRAME ds1 DROP NAN ROW     ON SUBSET ("col1","col6") ;
 
-# Drop by specifying a tresh Hold
+# Drop by specifying a tresh Hold 
 ALTER LIONFRAME ds1 DROP NAN FEATURE  WITH FEWER THAN 4;
 ALTER LIONFRAME ds1 DROP NAN FEATURE  WITH ALL NAN;
 ALTER LIONFRAME ds1 DROP NAN FEATURE  WITH ANY NAN;
@@ -49,24 +49,19 @@ ALTER LIONFRAME ds1 DROP NAN ROW      WITH FEWER THAN 4;
 ALTER LIONFRAME ds1 DROP NAN ROW      WITH ALL NAN;
 ALTER LIONFRAME ds1 DROP NAN ROW      WITH ANY NAN;
 
-# Filling NAN values : 
-ALTER LIONFRAME ds1 FILL NAN WITH 
+# Change the type of a FEATURE
+ALTER LIONFRAME ds1 MODIFY FEATURE "col1" int64;
+ALTER LIONFRAME ds1 MODIFY FEATURE "col1" int64, "col6" int32;
 
+# Updating values in a lionframe  ... or even filling nan values
+UPDATE ds1 SET "col1"=1;
+UPDATE ds1 SET "col1"=1 ,"col2"="value";
+UPDATE ds1 SET "col1"=1 ,"col2"="value" WHERE "col1"==1 AND "col1"<=3 ;       # >= <= != <> == IS 
+UPDATE ds1 SET "col1"=1 ,"col2"="value" WHERE "col1"==2.22 ;
+UPDATE ds1 SET "col1"=1 ,"col2"="value" WHERE "col1"=="string" ;
+UPDATE ds1 SET "col1"=1 ,"col2"="value" WHERE "col1"==NaN ;
 
-
-
-
-
-
-
-ADD int8 "col1" INTO ds1 AS "col4" + "col3" * "col12";
-AGGREGATE 'col1' + 'col2' FROM ds1 AS int8 "col3";
-
-
-ERASE "col1" FROM ds1;
-
-SET "col4" FROM ds1 AS float16 "col6";
-
-FILL "col1" FROM ds1 USING IMPUTATION;
-SELECT TOP 3 FROM ds1 USING CHI2;
-
+# Impute missing values 
+UPDATE ds1 IMPUTE "col1"=NAN USING MEAN; # MEAN/MEDIAN/MOST_FREQUENT
+UPDATE ds1 IMPUTE "col1"=0, "col6"=NaN USING MEAN;
+UPDATE ds1 IMPUTE "col1"='invalid' USING MEAN;
