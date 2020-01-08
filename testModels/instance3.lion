@@ -1,0 +1,87 @@
+
+
+FROM "test.csv" LOAD AS ds0;
+FROM "test.csv" LOAD (
+    int8 col1,
+    float16 col6,
+    int16 col9,
+) AS ds1 ;
+FROM "test.csv" LOAD ONLY (
+    int8 col1,
+    float16 col6,
+    int16 col9,
+) AS ds2 ;
+FROM "test.csv" LOAD (
+    int8 col1,
+    float16 col6,
+    int16 col9,
+) AS ds3 SPLIT USING "\t";
+FROM "test.csv" LOAD ONLY (
+    int8 col1,
+    float16 col6,
+    int16 col9,
+) AS ds4 SPLIT USING "\t";
+
+
+
+# Save new DataSet as a csv file
+SAVE LIONFRAME ds1 AS 'file.csv';
+# Save the generated code as : 
+SAVE CODE AS "code.py";
+
+
+# Drop a column from the dataset
+ALTER LIONFRAME ds1 DROP FEATURE "col1";
+ALTER LIONFRAME ds1 DROP FEATURE "col1", "col6";
+
+# Drop FEATURES / ROWS that have nan values
+ALTER LIONFRAME ds1 DROP NAN FEATURE;
+ALTER LIONFRAME ds1 DROP NAN ROW;
+
+# Drop FEATURES / ROWS that have nan values on a selected subset
+ALTER LIONFRAME ds1 DROP NAN FEATURE ON SUBSET ("col1") ;
+ALTER LIONFRAME ds1 DROP NAN FEATURE ON SUBSET ("col1","col6") ;
+ALTER LIONFRAME ds1 DROP NAN ROW     ON SUBSET ("col1") ;
+ALTER LIONFRAME ds1 DROP NAN ROW     ON SUBSET ("col1","col6") ;
+
+# Drop by specifying a tresh Hold 
+ALTER LIONFRAME ds1 DROP NAN FEATURE  WITH FEWER THAN 4;
+ALTER LIONFRAME ds1 DROP NAN FEATURE  WITH ALL NAN;
+ALTER LIONFRAME ds1 DROP NAN FEATURE  WITH ANY NAN;
+ALTER LIONFRAME ds1 DROP NAN ROW      WITH FEWER THAN 4;
+ALTER LIONFRAME ds1 DROP NAN ROW      WITH ALL NAN;
+ALTER LIONFRAME ds1 DROP NAN ROW      WITH ANY NAN;
+
+
+# Change the type of a FEATURE
+ALTER LIONFRAME ds1 MODIFY FEATURE "col1" int64;
+ALTER LIONFRAME ds1 MODIFY FEATURE "col1" int64, "col6" int32;
+
+
+# Change the name of a FEATURE
+ALTER LIONFRAME ds1 RENAME FEATURE "col1" TO "newcol1";
+ALTER LIONFRAME ds1 RENAME FEATURE "col1" TO "newcol1", "col6" TO "newcol1";
+
+# Updating values in a lionframe  ... or even filling nan values
+UPDATE ds1 SET "col1"=1;
+UPDATE ds1 SET "col1"=1 ,"col2"="value";
+UPDATE ds1 SET "col1"=1 ,"col2"="value" WHERE "col1"==1 AND "col1"<=3 AND "col5" == 8;       # >= <= != <> == IS 
+UPDATE ds1 SET "col1"=1 ,"col2"="value" WHERE "col1"==0.0;
+UPDATE ds1 SET "col1"=1 ,"col2"="value" WHERE "col1"=="string" OR "col4" >= 8;
+UPDATE ds1 SET "col1"=1 ,"col2"="value" WHERE "col1"==NaN ;
+
+
+# Impute missing values 
+UPDATE ds1 IMPUTE "col1"=NaN USING MEAN; # MEAN/MEDIAN/MOST_FREQUENT
+UPDATE ds1 IMPUTE "col1"=0, "col6"=NaN USING MEAN;
+UPDATE ds1 IMPUTE "col1"='invalid' USING MEAN;
+
+
+# Handling categorical Data : Ordinal Features
+UPDATE ds1 MAP "col1" USING ('category1':0, 'category2':2, "category3":4);
+UPDATE ds1 MAP "col1" USING ('category1':0, 'category2':2, "category3":4), 
+                "col6" USING ('category1':2, 'category2':1, "category3":6);
+
+# Handling categorical Data : Nominal Features
+UPDATE ds1 ENCODE "col1"; 
+UPDATE ds1 ENCODE "col1", "col6"; 
