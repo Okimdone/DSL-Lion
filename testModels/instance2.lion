@@ -1,9 +1,63 @@
+# Loading and saving csv files
+FROM "test.csv" LOAD AS ds1 ;
+FROM "test.csv" LOAD (
+    int8 "col1",
+    float16 "col6",
+    int16 "col9",
+) AS ds1 ;
+FROM "test.csv" LOAD ONLY (
+    int8 "col1",
+    float16 "col6",
+    int16 "col9",
+) AS ds1 ;
+FROM "test.csv" LOAD (
+    int8 "col1",
+    float16 "col6",
+    int16 "col9",
+) AS ds1 SPLIT USING "\t";
+FROM "test.csv" LOAD ONLY (
+    int8 "col1",
+    float16 "col6",
+    int16 "col9",
+) AS ds1 SPLIT USING "\t";
 
-LOAD "test.csv" INTO ds1 AS {
-    int8 "col1"
-    float16 "col6"
-    int16 "col9"
-} USING "\t" AS SEP;
+
+# Save new DataSet as a csv file
+SAVE ds1 AS 'file.csv';
+# Save the generated code as : 
+SAVE CODE AS 'code.py';
+
+# Drop a column from the dataset
+ALTER LIONFRAME ds1 DROP FEATURE "col1";
+ALTER LIONFRAME ds1 DROP FEATURE "col1", "col6";
+
+# Drop FEATURES / ROWS that have nan values
+ALTER LIONFRAME ds1 DROP NAN FEATURE;
+ALTER LIONFRAME ds1 DROP NAN ROW;
+
+# Drop FEATURES / ROWS that have nan values on a selected subset
+ALTER LIONFRAME ds1 DROP NAN FEATURE ON SUBSET ("col1") ;
+ALTER LIONFRAME ds1 DROP NAN FEATURE ON SUBSET ("col1","col6") ;
+ALTER LIONFRAME ds1 DROP NAN ROW     ON SUBSET ("col1") ;
+ALTER LIONFRAME ds1 DROP NAN ROW     ON SUBSET ("col1","col6") ;
+
+# Drop by specifying a tresh Hold
+ALTER LIONFRAME ds1 DROP NAN FEATURE  WITH FEWER THAN 4;
+ALTER LIONFRAME ds1 DROP NAN FEATURE  WITH ALL NAN;
+ALTER LIONFRAME ds1 DROP NAN FEATURE  WITH ANY NAN;
+ALTER LIONFRAME ds1 DROP NAN ROW      WITH FEWER THAN 4;
+ALTER LIONFRAME ds1 DROP NAN ROW      WITH ALL NAN;
+ALTER LIONFRAME ds1 DROP NAN ROW      WITH ANY NAN;
+
+# Filling NAN values : 
+ALTER LIONFRAME ds1 FILL NAN WITH 
+
+
+
+
+
+
+
 
 ADD int8 "col1" INTO ds1 AS "col4" + "col3" * "col12";
 AGGREGATE 'col1' + 'col2' FROM ds1 AS int8 "col3";
