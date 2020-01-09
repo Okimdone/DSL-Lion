@@ -3,7 +3,7 @@ MainRule:
 ;
 
 GeneralRule:
-    (Load | Save | Drop | Modify | Rename | Set | Impute | Map | Encode | Partition) ';'
+    (Load | Save | Drop | Modify | Rename | Set | Impute | Map | Encode | Partition | CreateNormalizer | UsingNormalizer | CreateStandardizer | UsingStandardizer) ';'
 ;
 
 FILEPATH:
@@ -119,10 +119,38 @@ Encode:
 Partition:
     'PARTITION' 'LIONFRAME' lionFrame=[Load] 'INTO'
     (
-        ('(' lf_train=ID ':' (train_size=FLOAT '%' | train_size=FLOAT) ')' ',' '(' lf_test=ID ')') |
-        ('(' lf_train=ID ')' ',' '(' lf_test=ID ':' (test_size=FLOAT '%' | test_size=FLOAT) ')')
+        ('(' lf_train=ID ':' (train_size=FLOAT '%' | train_size=FLOAT) ')' ',' (lf_test=ID | ('(' lf_test=ID ')'))) |
+        ( (lf_train=ID | ('(' lf_train=ID ')')) ',' '(' lf_test=ID ':' (test_size=FLOAT '%' | test_size=FLOAT) ')')
     )
 ;
+
+
+Normalize:
+    Update 'NORMALIZE' (features=FeatureVal | ('(' features=FeatureVal (',' features+=FeatureVal)* ')') )
+;
+
+
+CreateNormalizer:
+    Normalize 'SCALE' 'INTO' name=ID
+;
+
+UsingNormalizer:
+    Normalize 'SCALE' 'USING' normalizer=[CreateNormalizer]
+;
+
+Standardize:
+    Update 'STANDARDIZE' (features=FeatureVal | ('(' features=FeatureVal (',' features+=FeatureVal)* ')') )
+;
+
+
+CreateStandardizer:
+    Standardize 'SCALE' 'INTO' name=ID
+;
+
+UsingStandardizer:
+    Standardize 'SCALE' 'USING' std=[CreateStandardizer]
+;
+
 
 GeneralType:
     STRING | FLOAT | INT | 'NaN'
