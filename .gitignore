@@ -1,6 +1,7 @@
 .vscode/
 ENV/
 *.dot
+LION_META_MODEL_OLD.tx
 __pycache__
 processors/__pycache__
 
