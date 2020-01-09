@@ -66,7 +66,7 @@ def genCode(mainRule):
 
     # Splitting the data into training set and testing set
     #PartitionFrame = env.get_template('PartitionFrame.py.tpl')
-    #PF = PartitionFrame.render(lionFrame='feaf',trainFrameName='dsl_train', testFrameName='dsl_test' , columns=['col1','col66'], trainPercentage=0.7)
+    #PF = PartitionFrame.render(lionFrame='feaf',trainFrameName='dsl_train', testFrameName='dsl_test', trainPercentage=0.7)
     #print(PF)
 
     # Normalizing the data into training set and testing set
