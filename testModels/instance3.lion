@@ -4,22 +4,22 @@ FROM "test.csv" LOAD AS ds0;
 FROM "test.csv" LOAD (
     int8 col1,
     float16 col6,
-    int16 col9,
+    int16 col9
 ) AS ds1 ;
 FROM "test.csv" LOAD ONLY (
     int8 col1,
     float16 col6,
-    int16 col9,
+    int16 col9
 ) AS ds2 ;
 FROM "test.csv" LOAD (
     int8 col1,
     float16 col6,
-    int16 col9,
+    int16 col9
 ) AS ds3 SPLIT USING "\t";
 FROM "test.csv" LOAD ONLY (
     int8 col1,
     float16 col6,
-    int16 col9,
+    int16 col9
 ) AS ds4 SPLIT USING "\t";
 
 
@@ -109,15 +109,15 @@ UPDATE ds1 STANDARDIZE ("col1", "col6") SCALE USING s4;    # STD
 # Feature Selection : 
 
 # selection using statistical thechniques :
-SELECT k BEST FEATURES FROM ds1 INTO k_best USING TECHNIQUE CHI2;
-SELECT k BEST FEATURES FROM ds1 INTO k_best USING TECHNIQUE VARIANCE;
+#SELECT k BEST FEATURES FROM ds1 INTO k_best USING TECHNIQUE CHI2;
+#SELECT k BEST FEATURES FROM ds1 INTO k_best USING TECHNIQUE VARIANCE;
 
 # selection using training models :
-CREATE MODEL DT WITH (learning_rate:0.1, kernel:'polynomial') AS m1;
+#CREATE MODEL DT WITH (learning_rate:0.1, kernel:'polynomial') AS m1;
 
-SELECT k BEST FEATURES FROM ds1 INTO K_best USING MODEL m1;
+#SELECT k BEST FEATURES FROM ds1 INTO K_best USING MODEL m1;
 
 # selection using elemination :
 
 
-7 * (9 * 5) + (10);
+#7 * (9 * 5) + (10);

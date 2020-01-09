@@ -1,5 +1,7 @@
 from textx import metamodel_from_file, model, metamodel
 from processors import p1
+from sklearn.impute import SimpleImpute
+
 # from generator import genCode
 
 from textx import metamodel_from_file, get_children_of_type

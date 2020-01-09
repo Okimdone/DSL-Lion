@@ -15,61 +15,54 @@ Encapsulated_FILEPATH:
 ;
 
 FeatureVal:
-    val=ID | val=STRING
+    ID | STRING
 ;
 
 Feature:
-    type=Dtype v_name=FeatureVal ','
+    dtype=Dtype v_name=FeatureVal 
 ;
 
 
 Load:
-    'FROM' Encapsulated_FILEPATH 'LOAD' (('ONLY')? '(' 
-        feature+=Feature
+    'FROM' file_path=Encapsulated_FILEPATH 'LOAD' ((only?='ONLY')? '(' 
+        features+=Feature
+        (',' features+=Feature )*
     ')')? 'AS' name=ID ('SPLIT' 'USING' sep=STRING)?
 ;
 
 Save:
-    'SAVE' ('LIONFRAME' lionFrame=[Load] | 'CODE') 'AS' Encapsulated_FILEPATH
-;
-
-
-Alter:
-    'ALTER' 'LIONFRAME' lionFrame=[Load]
+    'SAVE' ('LIONFRAME' lionFrame=[Load] | 'CODE') 'AS' file_path=Encapsulated_FILEPATH
 ;
 
 Drop:
-    Alter 'DROP' ('FEATURE' features=FeatureVal (',' features+=FeatureVal)? | Dropna)
-;
-
-
-Dropna:
-    'NAN' ('FEATURE' | 'ROW') (Dropna_subset | Dropna_thresh)?
+    'ALTER' 'LIONFRAME' lionFrame=[Load] 'DROP' 
+    ( 'FEATURE' features=FeatureVal (',' features+=FeatureVal)* 
+    |  nan?="NAN" (axis='FEATURE' | axis='ROW') Dropna_subset? DropByTreshOrHow?
+    )
 ;
 
 Dropna_subset:
     'ON' 'SUBSET' '(' features=FeatureVal (',' features+=FeatureVal)* ')'
 ;
 
-Dropna_thresh:
-    'WITH' ('FEWER' 'THAN' thresh=INT | ('ALL' | 'ANY') 'NAN')
+DropByTreshOrHow:
+    'WITH' ('FEWER' 'THAN' thresh=INT | (how='ALL' | how='ANY') 'NAN')
 ;
-
 
 Column:
     v_name=FeatureVal type=Dtype
 ;
 
 Modify:
-    Alter 'MODIFY' 'FEATURE' columns=Column (',' columns+=Column)*
+    'ALTER' 'LIONFRAME' lionFrame=[Load] 'MODIFY' 'FEATURE' columns=Column (',' columns+=Column)*
 ;
 
-RenameTo:
+OldToNewName:
     old_feature=FeatureVal 'TO' new_feature=FeatureVal
 ;
 
 Rename:
-    Alter 'RENAME' 'FEATURE' renames=RenameTo (',' renames+=RenameTo)*
+    'ALTER' 'LIONFRAME' lionFrame=[Load] 'RENAME' 'FEATURE' columnNewNames=OldToNewName (',' columnNewNames+=OldToNewName)*
 ;
 
 Assign:
@@ -143,7 +136,7 @@ CreateNormalizer:
 ;
 
 UsingNormalizer:
-    Normalize 'SCALE' 'USING' normalizer=[CreateNormalizer]
+    Normalize 'SCALE' 'USING' normalizer=ID
 ;
 
 Standardize:
@@ -156,7 +149,7 @@ CreateStandardizer:
 ;
 
 UsingStandardizer:
-    Standardize 'SCALE' 'USING' std=[CreateStandardizer]
+    Standardize 'SCALE' 'USING' std=ID
 ;
 
 
