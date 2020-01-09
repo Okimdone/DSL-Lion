@@ -7,6 +7,9 @@ file_loader = FileSystemLoader('templates')
 env = Environment(loader=file_loader)
 env.globals.update(zip=zip)
 
+def cname(o):
+    return o.__class__.__name__
+
 def genCode(mainRule):
     #main_tpl = env.get_template('main.py.tpl')
     
