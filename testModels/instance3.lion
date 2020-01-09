@@ -85,3 +85,10 @@ UPDATE ds1 MAP "col1" USING ('category1':0, 'category2':2, "category3":4),
 # Handling categorical Data : Nominal Features
 UPDATE ds1 ENCODE "col1"; 
 UPDATE ds1 ENCODE "col1", "col6"; 
+
+
+# Partition the LIONFRAME into training and testing datasets
+PARTITION LIONFRAME ds1 INTO (dsl_train : 0.3) , (ds1_test);
+PARTITION LIONFRAME ds1 INTO (dsl_train : 30%) , (ds1_test);
+PARTITION LIONFRAME ds1 INTO (dsl_train) , (ds1_test:0.5);
+PARTITION LIONFRAME ds1 INTO (dsl_train) , (ds1_test:50%);

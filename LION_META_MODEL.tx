@@ -3,7 +3,7 @@ MainRule:
 ;
 
 GeneralRule:
-    (Load | Save | Drop | Modify | Rename | Set | Impute | Map | Encode) ';'
+    (Load | Save | Drop | Modify | Rename | Set | Impute | Map | Encode | Partition) ';'
 ;
 
 FILEPATH:
@@ -114,6 +114,14 @@ MapTo:
 
 Encode:
     Update 'ENCODE' features=FeatureVal (',' features+=FeatureVal)*
+;
+
+Partition:
+    'PARTITION' 'LIONFRAME' lionFrame=[Load] 'INTO'
+    (
+        ('(' lf_train=ID ':' (train_size=FLOAT '%' | train_size=FLOAT) ')' ',' '(' lf_test=ID ')') |
+        ('(' lf_train=ID ')' ',' '(' lf_test=ID ':' (test_size=FLOAT '%' | test_size=FLOAT) ')')
+    )
 ;
 
 GeneralType:
