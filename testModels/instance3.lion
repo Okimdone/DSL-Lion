@@ -83,7 +83,7 @@ UPDATE ds1 MAP "col1" USING ('category1':0, 'category2':2, "category3":4),
                 "col6" USING ('category1':2, 'category2':1, "category3":6);
 
 # Handling categorical Data : Nominal Features
-UPDATE ds1 ENCODE "col1"; 
+UPDATE ds1 ENCODE "col1";
 UPDATE ds1 ENCODE "col1", "col6"; 
 
 
@@ -95,11 +95,29 @@ PARTITION LIONFRAME ds1 INTO (dsl_train) , (ds1_test:50%);
 
 
 # Normalize a dataset 
-UPDATE ds1 NORMALIZE ("col1","asdf") SCALE INTO s1;                 # MIN_MAX
-UPDATE ds1 NORMALIZE ("col1") SCALE USING s1;                # MIN_MAX
+UPDATE ds1 NORMALIZE ("col1","asdf") SCALE INTO s1;        # MIN_MAX
+UPDATE ds1 NORMALIZE ("col1") SCALE USING s1;              # MIN_MAX
 UPDATE ds1 NORMALIZE ("col1", "col6") SCALE INTO s2;       # MIN_MAX
 UPDATE ds1 NORMALIZE ("col1", "col6") SCALE USING s2;      # MIN_MAX
-UPDATE ds1 STANDARDIZE ("col1") SCALE INTO s3;               # STD
-UPDATE ds1 STANDARDIZE ("col1") SCALE USING s3;              # STD
+UPDATE ds1 STANDARDIZE ("col1") SCALE INTO s3;             # STD
+UPDATE ds1 STANDARDIZE ("col1") SCALE USING s3;            # STD
 UPDATE ds1 STANDARDIZE ("col1", "col6") SCALE INTO s4;     # STD
 UPDATE ds1 STANDARDIZE ("col1", "col6") SCALE USING s4;    # STD
+
+
+
+# Feature Selection : 
+
+# selection using statistical thechniques :
+SELECT k BEST FEATURES FROM ds1 INTO k_best USING TECHNIQUE CHI2;
+SELECT k BEST FEATURES FROM ds1 INTO k_best USING TECHNIQUE VARIANCE;
+
+# selection using training models :
+CREATE MODEL DT WITH (learning_rate:0.1, kernel:'polynomial') AS m1;
+
+SELECT k BEST FEATURES FROM ds1 INTO K_best USING MODEL m1;
+
+# selection using elemination :
+
+
+7 * (9 * 5) + (10);

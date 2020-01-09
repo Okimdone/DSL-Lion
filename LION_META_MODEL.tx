@@ -3,7 +3,7 @@ MainRule:
 ;
 
 GeneralRule:
-    (Load | Save | Drop | Modify | Rename | Set | Impute | Map | Encode | Partition | CreateNormalizer | UsingNormalizer | CreateStandardizer | UsingStandardizer) ';'
+    (Operation | Load | Save | Drop | Modify | Rename | Set | Impute | Map | Encode | Partition | CreateNormalizer | UsingNormalizer | CreateStandardizer | UsingStandardizer) ';'
 ;
 
 FILEPATH:
@@ -88,9 +88,17 @@ Cmp:
     feature=FeatureVal op=Operator val=GeneralType
 ;
 
+/*Operation:
+    TerminalOperation (logical_op=LogicalOperator cmps+=Cmp)*;
+ 
+TerminalOperation:
+    '(' Operation ')'
+    GeneralType;*/
+
 Where:
     'WHERE' cmps=Cmp (logical_op=LogicalOperator cmps+=Cmp)*
 ;
+
 
 Impute:
     Update 'IMPUTE' assigns=Assign (',' assigns+=Assign)* 'USING' stragety=ImputationStrategy
@@ -181,6 +189,29 @@ Algo:
 Comment:
   /#.*$/
 ;
+
+
+
+
+Operation:
+  Multiplication ('+' Multiplication)*
+;
+  
+Multiplication:
+  Primary ('*' Primary)*
+;
+  
+Primary:
+  NumberLiteral |
+  '(' Operation ')'
+;
+  
+NumberLiteral:
+  INT;
+
+
+
+
 
 
 
