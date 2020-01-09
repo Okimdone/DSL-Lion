@@ -1,5 +1,5 @@
 import pandas as pd
-#import sklearn 
-
-{% for loadFrame in loadFrames %}
-{{ loadFrame }} {% endfor %}
+import numpy as np
+from sklearn.impute import SimpleImputer
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
