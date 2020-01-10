@@ -4,4 +4,4 @@
 {{lionFrame}}[{{columns}}] = {{scaler}}.transform({{lionFrame}}[{{columns}}] )
 {% elif way == 'using'%}
 {{lionFrame}}[{{columns}}] = {{scaler}}.transform({{lionFrame}}[{{columns}}] )
-{% endif %}_
+{% endif %}

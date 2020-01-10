@@ -1,1 +1,2 @@
-{{ lionFrame }}.astype({{ columnToType }}, copy=False)
+{{ lionFrame }}.astype({{ columnToType }}, copy=False) 
+
