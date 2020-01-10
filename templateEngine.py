@@ -85,6 +85,8 @@ def genCode(mainRule):
             # Normalizing the data into training set and testing set
             StandardizeFeature = env.get_template('StandardizeFeature.py.tpl')
             code += StandardizeFeature.render(lionFrame=rule.lionFrame.name, columns=rule.features, way=rule.way.lower(), scaler=rule.scaler)
+        elif cname(rule) ==  'Print':
+            return f"print({rule.name})"
     return code
 
 

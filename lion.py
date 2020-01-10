@@ -1,24 +1,28 @@
-from textx import metamodel_from_file, model, metamodel
-from processors import p1
-from sklearn.impute import SimpleImpute
+import readline
+import textx as tx
+import templateEngine as te
 
-# from generator import genCode
+readline.write_history_file( '.lion_history' )
+readline.set_history_length(1000)
+mm = tx.metamodel_from_file('LION_META_MODEL.tx')
 
-from textx import metamodel_from_file, get_children_of_type
-import pandas as pd
-
-mm = metamodel_from_file('LION_META_MODEL.tx')
-
-#import templateTesting
-#x = templateTesting.genCode(m)
-#print(x)
-# inject the processor into the meta-model : 
-p1.inject_processor(mm)
-
-m = mm.model_from_file('testModels/instance3.lion')
-# print(model.get_children_of_type('LoadRule', m))
-# generated_file_path = getCode(m)
-
-# print(dir(mm.rootcls._tx_attrs['rules'].cls))
-# print(dir(metamodel))
-# print(dir(mm.namespaces['LION_META_MODEL']))
+while(True):
+    try : 
+        c = input("lion> ")
+        while(True) :
+            if ';' in c:
+                break
+            c += input("...    ")
+            
+        m = mm.model_from_str(c)
+        code = te.genCode(m)
+        exec(code)
+    except EOFError :
+        print("\r   bye :(")
+        break
+    except KeyboardInterrupt:
+        print("\ntype exit() or EOF to quit!")
+    except SyntaxError as e:
+        print("Invalid Syntax ERRROR", e)
+    except Exception as e:
+        print(e)

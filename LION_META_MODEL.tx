@@ -3,9 +3,11 @@ MainRule:
 ;
 
 GeneralRule:
-    (Load | Save | Drop | Modify | Rename | Set | Impute | Map | Encode | Partition | Normalize | Standardize ) ';'
+    (Load | Save | Drop | Modify | Rename | Set | Impute | Map | Encode | Partition | Normalize | Standardize | Print ) ';'
 ;
-
+Print:
+    'PRINT' name=ID
+;
 FILEPATH:
     /(\/)?([a-zA-Z0-1_.]+(\/)?)*[a-zA-Z0-9_.]+/ 
 ;
