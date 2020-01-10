@@ -56,7 +56,7 @@ def genCode(mainRule):
             code += ImputedColumn.render(
                 lionFrame=rule.lionFrame.name, 
                 columns=[assign.feature for assign in rule.assigns],
-                missing_value=[assign.val for assign in rule.assigns], strategy=rule.strategy)
+                missing_values=[assign.val for assign in rule.assigns], strategy=rule.strategy.lower())
 
         elif cname(rule) == 'Map':
             # Mapping a ordinal categorical Feature of a dataframe :
