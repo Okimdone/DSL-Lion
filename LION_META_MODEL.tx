@@ -11,7 +11,7 @@ FILEPATH:
 ;
 
 Encapsulated_FILEPATH:
-    ('"' file_path=FILEPATH '"' | "'" file_path=FILEPATH "'")
+    ('"' name=FILEPATH '"' | "'" name=FILEPATH "'")
 ;
 
 FeatureVal:
@@ -37,16 +37,8 @@ Save:
 Drop:
     'ALTER' 'LIONFRAME' lionFrame=[Load] 'DROP' 
     ( 'FEATURE' features=FeatureVal (',' features+=FeatureVal)* 
-    |  nan?="NAN" (axis='FEATURE' | axis='ROW') Dropna_subset? DropByTreshOrHow?
+    |  nan?="NAN" (axis='FEATURE' | axis='ROW') ('ON' 'SUBSET' '(' features=FeatureVal (',' features+=FeatureVal)* ')')? ('WITH' ('FEWER' 'THAN' thresh=INT | (how='ALL' | how='ANY') 'NAN'))?
     )
-;
-
-Dropna_subset:
-    'ON' 'SUBSET' '(' features=FeatureVal (',' features+=FeatureVal)* ')'
-;
-
-DropByTreshOrHow:
-    'WITH' ('FEWER' 'THAN' thresh=INT | (how='ALL' | how='ANY') 'NAN')
 ;
 
 Column:
@@ -101,7 +93,7 @@ Where:
 
 
 Impute:
-    'UPDATE' lionFrame=[Load] 'IMPUTE' assigns=Assign (',' assigns+=Assign)* 'USING' stragety=ImputationStrategy
+    'UPDATE' lionFrame=[Load] 'IMPUTE' assigns=Assign (',' assigns+=Assign)* 'USING' strategy=ImputationStrategy
 ;
 
 Map:
@@ -109,11 +101,7 @@ Map:
 ;
 
 MapColumn:
-    feature=FeatureVal 'USING' MapDict
-;
-
-MapDict:
-    '(' categories=MapTo (',' categories+=MapTo)* ')'
+    feature=FeatureVal 'USING' '(' categories=MapTo (',' categories+=MapTo)* ')'
 ;
 
 MapTo:
@@ -166,10 +154,3 @@ Algo:
 Comment:
   /#.*$/
 ;
-
-
-
-
-
-
-

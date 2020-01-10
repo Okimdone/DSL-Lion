@@ -1,1 +1,2 @@
-{{ lionFrame }}.dropna(axis={{ axis | default(0, true)}} {% if subset is defined %}, subset={{ subset }}{% endif %} {% if how is defined %}, how={{ how }} {% elif tresh is defined %}, tresh={{ tresh }} {% endif %}, inplace=True)
+{{ lionFrame }}.dropna(axis={{ axis | default(0, true)}} {% if subset != [] %}, subset={{ subset }}{% endif %} {% if how != '' %}, how={{ how }} {% elif thresh > 0 %}, tresh={{ thresh }} {% endif %}, inplace=True) 
+
