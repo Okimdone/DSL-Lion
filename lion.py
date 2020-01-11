@@ -1,6 +1,17 @@
 import readline
 import textx as tx
 import templateEngine as te
+from textx.model import get_children
+
+
+def tree_generator(node, prefix = '-'):
+    print(prefix, node.__class__.__name__)
+    try:
+        for child in node.rules:
+            if child != node:
+                tree_generator(child, prefix + "--")
+    except:
+        pass
 
 readline.write_history_file( '.lion_history' )
 readline.set_history_length(1000)
@@ -17,10 +28,9 @@ while(True):
             c += input("...    ")
         temp.append(c)
         m = mm.model_from_str('\n'.join(temp))
-        code = te.genCode(m)
+        code = te.genCode(m.rules[-1])
         exec(code)
-        if te.cname(m.rules[-1]) != 'Print':
-            AllofCode.append(c)
+        AllofCode.append(c)
     except EOFError :
         print("\r   bye :(")
         break
