@@ -123,5 +123,9 @@ UPDATE ds1 STANDARDIZE ("col1", "col6") SCALE USING s4;    # STD
 #WHERE NOT col == 10 AND NOT (NOT col > 5 AND (col == 10 OR NOT col == 10));
 
 
-FROM "donnee.csv" LOAD AS ds0;
-UPDATE ds0 IMPUTE "py"=NaN USING MEAN;
+#Filter method for feature selection :
+
+SELECT FEATURES FROM ds INTO k_best USING FILTER CHI2 WITH (
+    K AS 1,
+    TARGET AS sex_F
+);

@@ -88,8 +88,12 @@ def genCode(rule):
         # Normalizing the data into training set and testing set
         StandardizeFeature = env.get_template('StandardizeFeature.py.tpl')
         code += StandardizeFeature.render(lionFrame=rule.lionFrame.name, columns=rule.features, way=rule.way.lower(), scaler=rule.scaler)
+    elif cname(rule) == 'Select':
+        # Select the best features subset from the lionframe
+        SelectFeatures = env.get_template('SelectFeatures.py.tpl')
+        code += SelectFeatures.render(lionframe=rule.lionFrame.name, best_lionframe=rule.name, filter=rule.filter.lower(), k=rule.k, target=rule.target)
     elif cname(rule) ==  'Print':
-        return f"\nprint({rule.name})"
+        return f"\nprint({rule.name})\n"
     print(code)
     return code
 

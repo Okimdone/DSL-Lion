@@ -3,7 +3,7 @@ MainRule:
 ;
 
 GeneralRule:
-    (Load | Save | Drop | Modify | Rename | Set | Impute | Map | Encode | Partition | Normalize | Standardize | Print ) ';'
+    (Load | Select | Save | Drop | Modify | Rename | Set | Impute | Map | Encode | Partition | Normalize | Standardize | Print ) ';'
 ;
 Print:
     'PRINT' name=ID
@@ -24,6 +24,9 @@ Feature:
     dtype=Dtype v_name=FeatureVal 
 ;
 
+LionFrame:
+    Load | Select
+;
 
 Load:
     'FROM' file_path=Encapsulated_FILEPATH 'LOAD' ((only?='ONLY')? '(' 
@@ -33,11 +36,11 @@ Load:
 ;
 
 Save:
-    'SAVE' ('LIONFRAME' lionFrame=[Load] | 'CODE') 'AS' file_path=Encapsulated_FILEPATH
+    'SAVE' ('LIONFRAME' lionFrame=[LionFrame] | 'CODE') 'AS' file_path=Encapsulated_FILEPATH
 ;
 
 Drop:
-    'ALTER' 'LIONFRAME' lionFrame=[Load] 'DROP' 
+    'ALTER' 'LIONFRAME' lionFrame=[LionFrame] 'DROP' 
     ( 'FEATURE' features=FeatureVal (',' features+=FeatureVal)* 
     |  nan?="NAN" (axis='FEATURE' | axis='ROW') ('ON' 'SUBSET' '(' features=FeatureVal (',' features+=FeatureVal)* ')')? ('WITH' ('FEWER' 'THAN' thresh=INT | (how='ALL' | how='ANY') 'NAN'))?
     )
@@ -48,7 +51,7 @@ Column:
 ;
 
 Modify:
-    'ALTER' 'LIONFRAME' lionFrame=[Load] 'MODIFY' 'FEATURE' columns=Column (',' columns+=Column)*
+    'ALTER' 'LIONFRAME' lionFrame=[LionFrame] 'MODIFY' 'FEATURE' columns=Column (',' columns+=Column)*
 ;
 
 OldToNewName:
@@ -56,7 +59,7 @@ OldToNewName:
 ;
 
 Rename:
-    'ALTER' 'LIONFRAME' lionFrame=[Load] 'RENAME' 'FEATURE' columnNewNames=OldToNewName (',' columnNewNames+=OldToNewName)*
+    'ALTER' 'LIONFRAME' lionFrame=[LionFrame] 'RENAME' 'FEATURE' columnNewNames=OldToNewName (',' columnNewNames+=OldToNewName)*
 ;
 
 Assign:
@@ -64,7 +67,7 @@ Assign:
 ;
 
 Set:
-    'UPDATE' lionFrame=[Load] 'SET' assigns=Assign (',' assigns+=Assign)* (Where)?
+    'UPDATE' lionFrame=[LionFrame] 'SET' assigns=Assign (',' assigns+=Assign)* (Where)?
 ;
 
 Cmp:
@@ -95,11 +98,11 @@ Where:
 
 
 Impute:
-    'UPDATE' lionFrame=[Load] 'IMPUTE' assigns=Assign (',' assigns+=Assign)* 'USING' strategy=ImputationStrategy
+    'UPDATE' lionFrame=[LionFrame] 'IMPUTE' assigns=Assign (',' assigns+=Assign)* 'USING' strategy=ImputationStrategy
 ;
 
 Map:
-    'UPDATE' lionFrame=[Load] 'MAP' mapcolumns=MapColumn (',' mapcolumns+=MapColumn)*
+    'UPDATE' lionFrame=[LionFrame] 'MAP' mapcolumns=MapColumn (',' mapcolumns+=MapColumn)*
 ;
 
 MapColumn:
@@ -111,11 +114,11 @@ MapTo:
 ;
 
 Encode:
-    'UPDATE' lionFrame=[Load] 'ENCODE' features=FeatureVal (',' features+=FeatureVal)*
+    'UPDATE' lionFrame=[LionFrame] 'ENCODE' features=FeatureVal (',' features+=FeatureVal)*
 ;
 
 Partition:
-    'PARTITION' 'LIONFRAME' lionFrame=[Load] 'INTO'
+    'PARTITION' 'LIONFRAME' lionFrame=[LionFrame] 'INTO'
     (
         ('(' lf_train=ID ':' (train_size=FLOAT '%' | train_size=FLOAT) ')' ',' (lf_test=ID | ('(' lf_test=ID ')'))) |
         ( (lf_train=ID | ('(' lf_train=ID ')')) ',' '(' lf_test=ID ':' (test_size=FLOAT '%' | test_size=FLOAT) ')')
@@ -123,13 +126,37 @@ Partition:
 ;
 
 Normalize:
-    'UPDATE' lionFrame=[Load] 'NORMALIZE' (features=FeatureVal | ('(' features=FeatureVal (',' features+=FeatureVal)* ')') )
+    'UPDATE' lionFrame=[LionFrame] 'NORMALIZE' (features=FeatureVal | ('(' features=FeatureVal (',' features+=FeatureVal)* ')') )
     'SCALE' (way='INTO' | way='USING') scaler=ID
 ;
 
 Standardize:
-    'UPDATE' lionFrame=[Load] 'STANDARDIZE' (features=FeatureVal | ('(' features=FeatureVal (',' features+=FeatureVal)* ')') )
+    'UPDATE' lionFrame=[LionFrame] 'STANDARDIZE' (features=FeatureVal | ('(' features=FeatureVal (',' features+=FeatureVal)* ')') )
     'SCALE' (way='INTO' | way='USING') scaler=ID
+;
+
+/*SelectArgName:
+    ID | STRING
+;
+
+SelectArgVal:
+    STRING | FLOAT | INT
+;
+
+SelectArg:
+    arg_name=SelectArgName 'AS' arg_value=SelectArgVal
+;*/
+
+Select:
+    'SELECT' 'FEATURES' 'FROM' lionFrame=[LionFrame] 'INTO' name=ID 'USING' 'FILTER' filter=FeatureSelectionFilters 'WITH' '('
+        'K' 'AS' k=INT ','
+        'TARGET' 'AS' target=FeatureVal
+    ')'
+;
+
+
+FeatureSelectionFilters:
+    'VARIANCE' | 'CHI2' | 'F_CLASSIF' | 'F_REGRESSION'
 ;
 
 GeneralType:
