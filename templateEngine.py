@@ -10,9 +10,11 @@ env.globals.update(zip=zip)
 def cname(o):
     return o.__class__.__name__
 
-def genCode(rule):
-    code = env.get_template('main.py.tpl').render()
+def genDependenciesCode():
+    return env.get_template('main.py.tpl').render()
 
+def genCode(rule):
+    code = ""
     if cname(rule) == 'Load':
         # Loading RULE :
         loadFrame = env.get_template('LoadLionFrame.py.tpl')
@@ -28,16 +30,17 @@ def genCode(rule):
             # Dropping a column from a dataframe :
             DropColumn = env.get_template('DropColumn.py.tpl')
             code += DropColumn.render(lionFrame=rule.lionFrame.name, features=rule.features)
+            print(code)
         else :
             # Dropping a column from a dataframe :
             DropNan = env.get_template('DropNaN.py.tpl')
-            axis = 0 if rule.axis == 'ROW' else 1
-            code += DropNan.render(lionFrame=rule.lionFrame.name, axis=axis, subset=rule.features, how=rule.how.lower(), thresh=rule.thresh)
-    
+            axis, subset = (0, rule.features) if rule.axis == 'ROW' else (1,[int(f) for f in rule.features])
+            code += DropNan.render(lionFrame=rule.lionFrame.name, axis=axis, subset=subset, how=rule.how.lower(), thresh=rule.thresh)
+            print(code)
     elif cname(rule) == 'Modify':
         # Changing the type a column from a dataframe :
         ChangeColumnType = env.get_template('ChangeColumnType.py.tpl')
-        code += ChangeColumnType.render(lionFrame=rule.lionFrame.name, columnToType={c.v_name:c.type for c in rule.columns})
+        code += ChangeColumnType.render(lionFrame=rule.lionFrame.name, columnToType={c.v_name: c.type for c in rule.columns})
 
     elif cname(rule) == 'Rename':
         # Renaming a column from a dataframe :
@@ -86,12 +89,12 @@ def genCode(rule):
         StandardizeFeature = env.get_template('StandardizeFeature.py.tpl')
         code += StandardizeFeature.render(lionFrame=rule.lionFrame.name, columns=rule.features, way=rule.way.lower(), scaler=rule.scaler)
     elif cname(rule) ==  'Print':
-        return f"print({rule.name})"
+        return f"\nprint({rule.name})"
+    print(code)
     return code
 
 
 if __name__ == "__main__":
     mm = tx.metamodel_from_file('LION_META_MODEL.tx')
     m = mm.model_from_file('testModels/instance2.lion')
-   
     print(genCode(m))
