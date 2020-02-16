@@ -1,2 +1,2 @@
-{{ lionFrame }}.rename({{ columnNewNames }}, inplace=True) 
+{{ lionFrame }}.rename(columns={{ columnNewNames }}, inplace=True) 
 
