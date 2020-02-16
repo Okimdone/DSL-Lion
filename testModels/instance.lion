@@ -1,3 +1,5 @@
+
+
 FROM "file1.csv" LOAD {
     int16 "col1";
     int8 "col2";
