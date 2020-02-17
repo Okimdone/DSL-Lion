@@ -1,7 +1,8 @@
-name,age,rate,sex
-mo,10,95.3,M
-ha,45,86.21,M
-da,12,63.28,nan
-fa,12,96.01,F
-la,nan,10.0,M
-pa,nan,60.0,F
+name,age,rate,rank,gender,hometown
+mo,10,95.3,"GOOD",M,madrid
+ha,45,86.21,"EXCELENT",M,newyork
+da,12,63.28,"BAD",nan,nan
+fa,12,96.01,"VERY-BAD",F,nan
+la,nan,10.0,"GOOD",M,nan
+pa,nan,60.0,"BAD",F,nan
+nan, 10, nan,"EXCELENT",nan,nan

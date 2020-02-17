@@ -148,7 +148,7 @@ SelectArg:
 ;*/
 
 Select:
-    'SELECT' 'FEATURES' 'FROM' lionFrame=[LionFrame] 'INTO' newlionframe=LionFrame 'USING' 'FILTER' filter=FeatureSelectionFilters 'WITH' '('
+    'SELECT' 'FEATURES' 'FROM' oldlionFrame=[LionFrame] 'INTO' lionFrame=LionFrame 'USING' 'FILTER' filter=FeatureSelectionFilters 'WITH' '('
         'K' 'AS' k=INT ','
         'TARGET' 'AS' target=FeatureVal
     ')'

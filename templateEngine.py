@@ -91,7 +91,7 @@ def genCode(rule):
     elif cname(rule) == 'Select':
         # Select the best features subset from the lionframe
         SelectFeatures = env.get_template('SelectFeatures.py.tpl')
-        code += SelectFeatures.render(lionframe=rule.lionFrame.name, best_lionframe=rule.newlionframe.name, filter=rule.filter.lower(), k=rule.k, target=rule.target)
+        code += SelectFeatures.render(lionframe=rule.oldlionFrame.name, best_lionframe=rule.lionFrame.name, filter=rule.filter.lower(), k=rule.k, target=rule.target)
     elif cname(rule) ==  'Print':
         return f"\nprint({rule.name})\n"
 
