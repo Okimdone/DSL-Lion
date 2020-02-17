@@ -1,0 +1,1 @@
+{{best_lionframe}} = SelectKBest({{filter}}, k={{k}}).fit_transform({{lionframe}}.loc[:, {{lionframe}}.columns != '{{target}}'], {{lionframe}}['{{target}}'])
