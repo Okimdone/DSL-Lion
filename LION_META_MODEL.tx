@@ -3,68 +3,177 @@ MainRule:
 ;
 
 GeneralRule:
-    ((Save | Add | Erase | Set | Fill | Select) ';' | Load)
+    (Load | Select | Save | Drop | Modify | Rename | Set | Impute | Map | Encode | Partition | Normalize | Standardize | Print ) ';'
 ;
-
+Print:
+    'PRINT' lionFrame=[LionFrame]
+;
 FILEPATH:
-    /(\/)?([a-zA-Z0-1_.]+(\/)?)*[a-zA-Z0-9_.]+/
+    /(\/)?([a-zA-Z0-1_.]+(\/)?)*[a-zA-Z0-9_.]+/ 
 ;
 
-// DDL : 
-Column:
-    type=Dtype v_name=STRING
+Encapsulated_FILEPATH:
+    ('"' name=FILEPATH '"' | "'" name=FILEPATH "'")
+;
+
+FeatureVal:
+    ID | STRING
+;
+
+Feature:
+    dtype=Dtype v_name=FeatureVal 
+;
+
+LionFrame:
+    name=ID
 ;
 
 Load:
-    'FROM' '"' file_path=FILEPATH '"' 'AS' lionFrame=ID 'LOAD'  (';' | ( (('ONLY')? '{'
-        columns+=Column
-    '}'
-    )? ('USING' sep=STRING 'AS' 'SEP' ';')?)?)
+    'FROM' file_path=Encapsulated_FILEPATH 'LOAD' ((only?='ONLY')? '(' 
+        features+=Feature
+        (',' features+=Feature )*
+    ')')? 'AS' lionFrame=LionFrame ('SPLIT' 'USING' sep=STRING)?
 ;
 
-
-Arith:
-    /[*+-\/]/
+Save:
+    'SAVE' ('LIONFRAME' lionFrame=[LionFrame] | 'CODE') 'AS' file_path=Encapsulated_FILEPATH
 ;
 
-LionArith:
-    cola=STRING (arith=Arith colb=LionArith)?
+Drop:
+    'ALTER' 'LIONFRAME' lionFrame=[LionFrame] 'DROP' 
+    ( 'FEATURE' features=FeatureVal (',' features+=FeatureVal)* 
+    |  nan?="NAN" (axis='FEATURE' | axis='ROW') ('ON' 'SUBSET' '(' features=FeatureVal (',' features+=FeatureVal)* ')')? ('WITH' ('FEWER' 'THAN' thresh=INT | (how='ALL' | how='ANY') 'NAN'))?
+    )
 ;
 
-
-Add:
-    'ADD' column=Column 'INTO' lionFrame=ID 'AS' (lionarith+=LionArith)
+Column:
+    v_name=FeatureVal type=Dtype
 ;
 
-Erase:
-    'ERASE' column=STRING 'FROM' lionFrame=ID
+Modify:
+    'ALTER' 'LIONFRAME' lionFrame=[LionFrame] 'MODIFY' 'FEATURE' columns=Column (',' columns+=Column)*
+;
+
+OldToNewName:
+    old_feature=FeatureVal 'TO' new_feature=FeatureVal
+;
+
+Rename:
+    'ALTER' 'LIONFRAME' lionFrame=[LionFrame] 'RENAME' 'FEATURE' columnNewNames=OldToNewName (',' columnNewNames+=OldToNewName)*
+;
+
+Assign:
+    feature=FeatureVal '=' val=GeneralType
 ;
 
 Set:
-    'SET' column=STRING 'FROM' lionFrame=ID 'AS' column=Column
+    'UPDATE' lionFrame=[LionFrame] 'SET' assigns=Assign (',' assigns+=Assign)* (Where)?
+;
+
+Cmp:
+    (feature=FeatureVal op=Operator val=GeneralType) | 
+    (val=GeneralType op=Operator feature=FeatureVal)
 ;
 
 
-Save:
-    'SAVE' lionFrame=ID 'AS' '"' file_path=FILEPATH '"'
+And:
+    left=Or ('AND' right=Or)*
+;
+
+Or:
+    left=Not ('OR' right=Not)*
+;
+
+Not:
+    ('NOT' Primary) | Primary
+;
+
+Primary:
+    Cmp | '(' And ')'
+;
+
+Where:
+    'WHERE' And
 ;
 
 
-// DML : 
-Fill:
-    'FILL' column=STRING 'FROM' lionFrame=ID 'USING' algo=Algo
+Impute:
+    'UPDATE' lionFrame=[LionFrame] 'IMPUTE' assigns=Assign (',' assigns+=Assign)* 'USING' strategy=ImputationStrategy
 ;
+
+Map:
+    'UPDATE' lionFrame=[LionFrame] 'MAP' mapcolumns=MapColumn (',' mapcolumns+=MapColumn)*
+;
+
+MapColumn:
+    feature=FeatureVal 'USING' '(' categories=MapTo (',' categories+=MapTo)* ')'
+;
+
+MapTo:
+    category=STRING ':' val=INT
+;
+
+Encode:
+    'UPDATE' lionFrame=[LionFrame] 'ENCODE' features=FeatureVal (',' features+=FeatureVal)*
+;
+
+Partition:
+    'PARTITION' 'LIONFRAME' lionFrame=[LionFrame] 'INTO'
+    (
+        ('(' lf_train=ID ':' (train_size=FLOAT '%' | train_size=FLOAT) ')' ',' (lf_test=ID | ('(' lf_test=ID ')'))) |
+        ( (lf_train=ID | ('(' lf_train=ID ')')) ',' '(' lf_test=ID ':' (test_size=FLOAT '%' | test_size=FLOAT) ')')
+    )
+;
+
+Normalize:
+    'UPDATE' lionFrame=[LionFrame] 'NORMALIZE' (features=FeatureVal | ('(' features=FeatureVal (',' features+=FeatureVal)* ')') )
+    'SCALE' (way='INTO' | way='USING') scaler=ID
+;
+
+Standardize:
+    'UPDATE' lionFrame=[LionFrame] 'STANDARDIZE' (features=FeatureVal | ('(' features=FeatureVal (',' features+=FeatureVal)* ')') )
+    'SCALE' (way='INTO' | way='USING') scaler=ID
+;
+ 
+/*SelectArgName:
+    ID | STRING
+;
+
+SelectArgVal:
+    STRING | FLOAT | INT
+;
+
+SelectArg:
+    arg_name=SelectArgName 'AS' arg_value=SelectArgVal
+;*/
 
 Select:
-    'SELECT' 'TOP' top=INT 'FROM' lionFrame=ID 'USING' algo=Algo
+    'SELECT' 'FEATURES' 'FROM' oldlionFrame=[LionFrame] 'INTO' lionFrame=LionFrame 'USING' 'FILTER' filter=FeatureSelectionFilters 'WITH' '('
+        'K' 'AS' k=INT ','
+        'TARGET' 'AS' target=FeatureVal
+    ')'
 ;
 
 
-// DQL : 
+FeatureSelectionFilters:
+    'VARIANCE' | 'CHI2' | 'F_CLASSIF' | 'F_REGRESSION'
+;
+
+GeneralType:
+    STRING | FLOAT | INT | 'NaN'
+;
+
+Operator:
+    '==' | '<=' | '>=' | '<' | '>' | '!='
+;
+
 Dtype:
-    'int8' | 'int16' | 'int32' | 'int64' | 'uint8' | 'uint16' | 'uint32' | 'uint64' | 'float16' | 'float32' | 'float64' | 'complex64' | 'complex128' | 'bool' | 'object' | 'bytes' | 'str' | 'void'
+    'int8' | 'int16' | 'int32' | 'int64' | 'uint8' | 'uint16' | 'uint32' | 'uint64' | 'float16' | 'float32' | 'float64' | 'complex64' | 'complex128' | 'bool' | 'obj' | 'bytes' | 'str' | 'void'
 ;
 
+ImputationStrategy:
+    'MEAN' | 'MEDIAN' | 'MOST_FREQUENT'
+;
 
 Algo:
     'CHI2' | 'IMPUTATION' | 'Z-SCORE' | 'MIN-MAX-SCORE'
@@ -72,5 +181,5 @@ Algo:
 
 
 Comment:
-  /\/\/.*$/
+  /#.*$/
 ;

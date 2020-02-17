@@ -1,0 +1,47 @@
+FROM "data.csv" LOAD AS ds;
+
+# Drop a column from the dataset
+ALTER LIONFRAME ds1 DROP FEATURE "name", "age";
+
+# Drop FEATURES / ROWS that have nan values
+ALTER LIONFRAME ds DROP NAN FEATURE;
+ALTER LIONFRAME ds DROP NAN ROW;
+
+# Drop FEATURES / ROWS that have nan values on a selected subset
+ALTER LIONFRAME ds DROP NAN FEATURE ON SUBSET ("1") ;
+ALTER LIONFRAME ds DROP NAN ROW     ON SUBSET ("age") ;
+
+
+# Change the type of a FEATURE
+ALTER LIONFRAME ds1 MODIFY FEATURE "rate" float32, "age" int32;
+
+# Change the name of a FEATURE
+ALTER LIONFRAME ds RENAME FEATURE "rate" TO "rated";
+
+# Updating values in a lionframe  ... or even filling nan values
+UPDATE ds SET "age"=1 ,"name"="value";
+
+# Impute missing values 
+UPDATE ds IMPUTE "col1"=NaN USING MEAN; 
+
+
+# Handling categorical Data : Ordinal Features
+UPDATE ds MAP "gender" USING ('M':0, 'F':1);
+
+
+# Handling categorical Data : Nominal Features
+UPDATE ds ENCODE "gender";
+
+# Normalize a dataset 
+UPDATE ds NORMALIZE ("rate") SCALE INTO s1;
+UPDATE ds NORMALIZE ("rate") SCALE USING s1;
+
+UPDATE ds STANDARDIZE ("rate") SCALE INTO s3;          
+UPDATE ds STANDARDIZE ("rate") SCALE USING s3;
+
+
+#Filter method for feature selection :
+SELECT FEATURES FROM ds INTO k_best USING FILTER CHI2 WITH (
+    K AS 1,
+    TARGET AS sex_F
+);
