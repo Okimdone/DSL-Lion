@@ -1,0 +1,70 @@
+
+LOAD "test.csv" INTO ds1 AS ONLY {
+    int8 "col1" 0
+    float16 "col6" 50
+    int16 "col9" 30
+} USING "\t" AS SEP;
+
+
+LOAD[ONLY] "test.csv" INTO ds1 AS FULL {
+    int8 "col1" 0
+    float16 "col6" 50
+    int16 "col9" 30
+} USING "\t" AS SEP;
+
+
+FROM "csv" AS ds1 LOAD;
+FROM "csv" AS ds1 LOAD USING "," AS SEP;
+FROM "csv" AS ds1 LOAD {
+    int8 "col1" 0
+    float16 "col6" 50
+    int16 "col9" 30
+} USING "," AS SEP;
+
+FROM "csv" AS ds1 LOAD[ONLY] {
+    int8 "col1" 0
+    float16 "col6" 50
+    int16 "col9" 30
+} USING "," AS SEP;
+
+
+//CREATE m1 FROM ds1 AS "col1" > 10;
+
+
+ADD int8 "col1" INTO ds1 AS "col4" + "col3" * "col12";
+//AGGREGATE 'col1' + 'col2' FROM ds1 AS int8 "col3";
+
+ERASE "col1" FROM ds1;
+
+SET "col4" FROM ds1 AS float16 "col6";
+SET NAME "col4" FROM ds1 AS "col6";
+SET TYPE "col4" FROM ds1 AS float16;
+
+
+FILL "col1" FROM ds1 USING IMPUTATION;
+SELECT TOP 3 FROM ds1 USING CHI2;
+
+
+DISPLAY THE SCHEMA OF A DATASET
+SHOW STATISTICAL VALUES OF A DATASET
+
+DATA FORMATING :[FROM TEXTUAL TO NUMERICAL
+FROM CONTINIOUS TO CATEGORICAL]
+NORMALIZE DATA
+PERFORM FULL DATA-REDUCTION
+
+
+
+
+
+
+
+
+
+
+
+
+LOAD
+APPLY -> 
+DISPLAY
+SAVE

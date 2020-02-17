@@ -6,7 +6,7 @@ GeneralRule:
     (Load | Select | Save | Drop | Modify | Rename | Set | Impute | Map | Encode | Partition | Normalize | Standardize | Print ) ';'
 ;
 Print:
-    'PRINT' name=ID
+    'PRINT' lionFrame=[LionFrame]
 ;
 FILEPATH:
     /(\/)?([a-zA-Z0-1_.]+(\/)?)*[a-zA-Z0-9_.]+/ 
@@ -25,14 +25,14 @@ Feature:
 ;
 
 LionFrame:
-    Load | Select
+    name=ID
 ;
 
 Load:
     'FROM' file_path=Encapsulated_FILEPATH 'LOAD' ((only?='ONLY')? '(' 
         features+=Feature
         (',' features+=Feature )*
-    ')')? 'AS' name=ID ('SPLIT' 'USING' sep=STRING)?
+    ')')? 'AS' lionFrame=LionFrame ('SPLIT' 'USING' sep=STRING)?
 ;
 
 Save:
@@ -134,7 +134,7 @@ Standardize:
     'UPDATE' lionFrame=[LionFrame] 'STANDARDIZE' (features=FeatureVal | ('(' features=FeatureVal (',' features+=FeatureVal)* ')') )
     'SCALE' (way='INTO' | way='USING') scaler=ID
 ;
-
+ 
 /*SelectArgName:
     ID | STRING
 ;
@@ -148,7 +148,7 @@ SelectArg:
 ;*/
 
 Select:
-    'SELECT' 'FEATURES' 'FROM' lionFrame=[LionFrame] 'INTO' name=ID 'USING' 'FILTER' filter=FeatureSelectionFilters 'WITH' '('
+    'SELECT' 'FEATURES' 'FROM' lionFrame=[LionFrame] 'INTO' newlionframe=LionFrame 'USING' 'FILTER' filter=FeatureSelectionFilters 'WITH' '('
         'K' 'AS' k=INT ','
         'TARGET' 'AS' target=FeatureVal
     ')'

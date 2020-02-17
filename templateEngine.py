@@ -18,7 +18,7 @@ def genCode(rule):
     if cname(rule) == 'Load':
         # Loading RULE :
         loadFrame = env.get_template('LoadLionFrame.py.tpl')
-        code += loadFrame.render(lionFrame=rule.name, file_path=rule.file_path.name, features=[f.v_name for f in rule.features], dtype=[f.dtype for f in rule.features], sep=rule.sep, only=rule.only)
+        code += loadFrame.render(lionFrame=rule.lionFrame.name, file_path=rule.file_path.name, features=[f.v_name for f in rule.features], dtype=[f.dtype for f in rule.features], sep=rule.sep, only=rule.only)
         
     elif cname(rule) == 'Save':
         # Saving a RULE :
@@ -91,7 +91,7 @@ def genCode(rule):
     elif cname(rule) == 'Select':
         # Select the best features subset from the lionframe
         SelectFeatures = env.get_template('SelectFeatures.py.tpl')
-        code += SelectFeatures.render(lionframe=rule.lionFrame.name, best_lionframe=rule.name, filter=rule.filter.lower(), k=rule.k, target=rule.target)
+        code += SelectFeatures.render(lionframe=rule.lionFrame.name, best_lionframe=rule.newlionframe.name, filter=rule.filter.lower(), k=rule.k, target=rule.target)
     elif cname(rule) ==  'Print':
         return f"\nprint({rule.name})\n"
 
