@@ -30,13 +30,13 @@ def genCode(rule):
             # Dropping a column from a dataframe :
             DropColumn = env.get_template('DropColumn.py.tpl')
             code += DropColumn.render(lionFrame=rule.lionFrame.name, features=rule.features)
-            print(code)
+            #print(code)
         else :
             # Dropping a column from a dataframe :
             DropNan = env.get_template('DropNaN.py.tpl')
             axis, subset = (0, rule.features) if rule.axis == 'ROW' else (1,[int(f) for f in rule.features])
             code += DropNan.render(lionFrame=rule.lionFrame.name, axis=axis, subset=subset, how=rule.how.lower(), thresh=rule.thresh)
-            print(code)
+            #print(code)
     elif cname(rule) == 'Modify':
         # Changing the type a column from a dataframe :
         ChangeColumnType = env.get_template('ChangeColumnType.py.tpl')
@@ -94,7 +94,7 @@ def genCode(rule):
         code += SelectFeatures.render(lionframe=rule.lionFrame.name, best_lionframe=rule.name, filter=rule.filter.lower(), k=rule.k, target=rule.target)
     elif cname(rule) ==  'Print':
         return f"\nprint({rule.name})\n"
-    print(code)
+
     return code
 
 

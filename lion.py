@@ -1,8 +1,9 @@
+#!ENV/bin/python
+
 import readline
 import textx as tx
 import templateEngine as te
 from textx.model import get_children
-
 
 def tree_generator(node, prefix = '-'):
     print(prefix, node.__class__.__name__)
@@ -13,14 +14,11 @@ def tree_generator(node, prefix = '-'):
     except:
         pass
 
-
 def save_code(pycode):
-    pyfile = open("pycode.py","w+")
-    pyfile.write(pycode)
-    pyfile.close()
+    with open("pycode.py","w+") as pyfile:
+        pyfile.write(pycode)
 
-
-readline.write_history_file( '.lion_history' )
+readline.read_history_file('.lion_history')
 readline.set_history_length(1000)
 mm = tx.metamodel_from_file('LION_META_MODEL.tx')
 
@@ -42,13 +40,18 @@ while(True):
         exec(code)
         pycode += code
         AllofCode.append(c)
+        readline.write_history_file('.lion_history')
     except EOFError :
         print("\r   bye :(")
         save_code(pycode)
         break
     except KeyboardInterrupt:
         print("\ntype exit() or EOF to quit!")
-    except SyntaxError as e:
-        print("Invalid Syntax ERRROR", e)
+    except FileNotFoundError as e:
+        print(f'''The file "{e.args[1].split("'")[1]}" does not exist!''')
+    except tx.exceptions.TextXSyntaxError as e:
+        print(f'''SyntaxError: name '{e.message.split("'")[-2]}' is not defined''')
+    except tx.exceptions.TextXSemanticError as e:
+        print(f'''SemanticError: '{e.message}' is not defined''')
     except Exception as e:
         print(e)
