@@ -1,4 +1,8 @@
+## Description : 
+An SQL-like language for data preprocessing that can be used to apply basic data preprocessing algorithms and then generate equivalent python code for applied preprocessing
+
 ### set up : 
+
 
 ```bash
 $ virtualenv ENV
@@ -12,4 +16,6 @@ $ pip install -r requirements.txt
 $ ./lion.py
 ```
 
-check the example models given in /testModels!
+### Examples of the syntax :
+
+Example of the language can be found in the /testModels folder
