@@ -1,20 +1,20 @@
-FROM "test.csv" LOAD AS ds0;
-FROM "test.csv" LOAD (
+FROM "data.csv" LOAD AS ds0;
+FROM "data.csv" LOAD (
     int8 col1,
     float16 col6,
     int16 col9
 ) AS ds1 ;
-FROM "test.csv" LOAD ONLY (
+FROM "data.csv" LOAD ONLY (
     int8 col1,
     float16 col6,
     int16 col9
 ) AS ds2 ;
-FROM "test.csv" LOAD (
+FROM "data.csv" LOAD (
     int8 col1,
     float16 col6,
     int16 col9
 ) AS ds3 SPLIT USING "\t";
-FROM "test.csv" LOAD ONLY (
+FROM "data.csv" LOAD ONLY (
     int8 col1,
     float16 col6,
     int16 col9

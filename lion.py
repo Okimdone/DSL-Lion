@@ -5,20 +5,15 @@ import textx as tx
 import templateEngine as te
 from textx.model import get_children
 
-def tree_generator(node, prefix = '-'):
-    print(prefix, node.__class__.__name__)
-    try:
-        for child in node.rules:
-            if child != node:
-                tree_generator(child, prefix + "--")
-    except:
-        pass
-
 def save_code(pycode):
     with open("pycode.py","w+") as pyfile:
         pyfile.write(pycode)
 
-readline.read_history_file('.lion_history')
+try : 
+    readline.read_history_file('.lion_history')
+except FileNotFoundError:
+    open('.lion_history', 'w').close()
+
 readline.set_history_length(1000)
 mm = tx.metamodel_from_file('LION_META_MODEL.tx')
 
@@ -55,3 +50,5 @@ while(True):
         print(f'''SemanticError: '{e.message}' is not defined''')
     except Exception as e:
         print(e)
+
+
